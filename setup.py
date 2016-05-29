@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(
-    name='CallerExcange',
+    name='CallerExchange',
     version='',
     packages=['model'],
     url='',
