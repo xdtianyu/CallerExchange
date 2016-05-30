@@ -66,10 +66,12 @@ def export(job_id):
 def download(url):
     res = urllib.request.urlopen(url)
     cache_dir = 'cache/'
+    file_name = url.split('/')[-1]
     if not os.path.exists(cache_dir):
         os.makedirs(cache_dir)
-    with open(cache_dir + url.split('/')[-1], 'b+w') as f:
+    with open(cache_dir + file_name, 'b+w') as f:
         f.write(res.read())
+    return file_name
 
 
 class Job:
