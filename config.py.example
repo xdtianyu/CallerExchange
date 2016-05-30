@@ -1,0 +1,4 @@
+#!/usr/bin/env python3
+
+app_id = "APP_ID"
+app_key = "MASTER_APP_KEY,master"

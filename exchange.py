@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
-
+import downloader
 from model.caller import Caller
 import sqlite3
 
 # 1. download offline file from LeanCloud
+
+downloader.run()
+
+exit(0)
 
 # 2. read file to caller model map
 
