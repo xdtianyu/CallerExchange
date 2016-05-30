@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import json
+import os
 import urllib.request
 
 import time
@@ -21,7 +22,7 @@ def run():
     job = run_job()
     check_status(job.id)
     path = export(job.id)
-    print(path)
+    download(path)
 
 
 def run_job():
@@ -46,7 +47,6 @@ def check_status(job_id):
             print('RUNNING')
             time.sleep(3)
         elif job_status.status == 'OK':
-            job_status.dump()
             break
 
 
@@ -55,13 +55,21 @@ def export(job_id):
     req = urllib.request.Request(url, data=''.encode('utf8'), headers=headers)
     res = urllib.request.urlopen(req)
     job_export = JobExport(res.read().decode('utf8'))
-    job_export.dump()
 
     if job_export.status == 'OK':
         return job_export.path
     else:
         print('Error, export failed.')
         return None
+
+
+def download(url):
+    res = urllib.request.urlopen(url)
+    cache_dir = 'cache/'
+    if not os.path.exists(cache_dir):
+        os.makedirs(cache_dir)
+    with open(cache_dir + url.split('/')[-1], 'b+w') as f:
+        f.write(res.read())
 
 
 class Job:

@@ -58,3 +58,4 @@ __pycache__
 *.db
 *.json
 config.py
+cache/
