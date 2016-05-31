@@ -19,6 +19,12 @@ class Caller:
         self.__dict__ = json.loads(s)
         self.source = self.__dict__['from']
         self.time = int(mktime(datetime.strptime(self.__dict__['createdAt'], "%Y-%m-%d %H:%M:%S.%f").timetuple()))
+        if '+86' in self.number:
+            self.number = self.number.replace('+86', '')
+        if ' ' in self.number:
+            self.number = self.number.replace(' ', '')
+        if '：0' in self.name:
+            self.name = self.name.replace('：0', '')
 
     def dump(self):
         print(self.number, self.name, self.count, self.type, self.source, self.time)
