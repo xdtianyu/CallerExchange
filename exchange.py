@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 import operator
 
+import re
+
 import downloader
 from model.caller import Caller
 import sqlite3
-from collections import Counter
 
 from model.status import Status
 
@@ -23,6 +24,10 @@ caller_map = {}  # number:[caller]
 with open(result_json) as f:
     for line in f:
         caller = Caller(line)
+
+        # filter wrong number
+        if not re.match("^[\d\+]*$", caller.number):
+            continue
 
         # filter wrong tagged number
         if caller.type < 0 or caller.type > 16 or caller.count == 10000 or caller.count < 0:

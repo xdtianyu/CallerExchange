@@ -6,6 +6,7 @@ import tarfile
 import urllib.request
 
 import time
+from urllib.error import HTTPError
 
 import config
 
@@ -66,7 +67,16 @@ def export(job_id):
 
 
 def download(url):
-    res = urllib.request.urlopen(url)
+    res = None
+
+    # download file and keep loop if server returned 404 error
+    while True:
+        try:
+            res = urllib.request.urlopen(url)
+            break
+        except HTTPError:
+            continue
+
     file_name = url.split('/')[-1]
     if not os.path.exists(cache_dir):
         os.makedirs(cache_dir)
