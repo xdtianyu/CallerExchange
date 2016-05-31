@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
+import operator
+
 import downloader
 from model.caller import Caller
 import sqlite3
+from collections import Counter
 
 from model.status import Status
 
@@ -19,11 +22,13 @@ caller_map = {}  # number:[caller]
 
 with open(result_json) as f:
     for line in f:
-        # print(line)
         caller = Caller(line)
-        # caller.dump()
-        if caller.type < 0 or caller.type > 8 or caller.count == 10000 or caller.count < 0:
+
+        # filter wrong tagged number
+        if caller.type < 0 or caller.type > 16 or caller.count == 10000 or caller.count < 0:
             continue
+
+        # add to caller map
         if caller.number not in caller_map.keys():
             caller_map[caller.number] = []
         caller_map[caller.number].append(caller)
@@ -31,9 +36,34 @@ with open(result_json) as f:
 # 3. resort caller list from map
 
 caller_list = []
+
 for number in caller_map:
-    cl = caller_map[number]
-    caller_list.append(cl[0].dict())
+    c_list = caller_map[number]
+    count = 0
+    target = c_list[0]
+    source = 8
+
+    # find max count from baidu, 360 or sogou
+    for caller in c_list:
+        if caller.count > count:
+            target = caller
+            count = caller.count
+        if 0 <= caller.source <= 2:
+            source = caller.source
+
+    # find max type count from user marked
+    if count == 0 and source == 8 and len(c_list) > 2:
+        counts = dict()
+        for caller in c_list:
+            t = caller.type
+            counts[t] = counts.get(t, 0) + 1
+        t = max(counts.items(), key=operator.itemgetter(1))[0]
+        for caller in c_list:
+            if caller.type == t:
+                target = caller
+                break
+
+    caller_list.append(target.dict())
 
 # 4. write to database file
 
