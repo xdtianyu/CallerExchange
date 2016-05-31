@@ -3,17 +3,21 @@ import downloader
 from model.caller import Caller
 import sqlite3
 
+from model.status import Status
+
 # 1. download offline file from LeanCloud
 
-downloader.run()
+result_json = downloader.run()
 
-exit(0)
+if result_json == 'error':
+    print("Download error!")
+    exit(-1)
 
 # 2. read file to caller model map
 
 caller_map = {}  # number:[caller]
 
-with open("result.json") as f:
+with open(result_json) as f:
     for line in f:
         # print(line)
         caller = Caller(line)
@@ -33,7 +37,10 @@ for number in caller_map:
 
 # 4. write to database file
 
-conn = sqlite3.connect('number.db')
+status = Status()
+status.update()
+
+conn = sqlite3.connect('cache/caller_' + str(status.version) + '.db')
 cur = conn.cursor()
 cur.execute('''CREATE TABLE IF NOT EXISTS CALLER
     ( ID INTEGER PRIMARY KEY AUTOINCREMENT, NUMBER TEXT UNIQUE, NAME TEXT, COUNT INTEGER, TYPE INTEGER, SOURCE INTEGER,
@@ -42,6 +49,12 @@ for caller in caller_list:
     print(caller)
     pass
 cur.executemany('insert into caller (number, name, count, type, source, time) values (?, ?, ?, ?, ?, ?)', caller_list)
+
+cur.execute('''CREATE TABLE IF NOT EXISTS STATUS
+    ( ID INTEGER PRIMARY KEY AUTOINCREMENT, VERSION INTEGER, COUNT INTEGER, NEW_COUNT INTEGER, TIME INTEGER );''')
+
+cur.execute('insert into status (version, count, new_count, time) values (?, ?, ?, ?)', status.to_list())
+
 conn.commit()
 cur.close()
 conn.close()

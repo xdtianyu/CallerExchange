@@ -6,7 +6,7 @@ from time import mktime
 
 
 class Caller:
-    """model of caller class from LeanCloud"""
+    """model of caller class for LeanCloud data"""
     number = None
     name = None
     count = None

@@ -2,6 +2,7 @@
 
 import json
 import os
+import tarfile
 import urllib.request
 
 import time
@@ -10,6 +11,7 @@ import config
 
 job_url = 'https://leancloud.cn/1.1/bigquery/job'
 job_params = {"appId": config.app_id, "jobConfig": {"sql": "select * from caller"}}
+cache_dir = 'cache/'
 
 headers = {
     "X-LC-Id": config.app_id,
@@ -22,7 +24,8 @@ def run():
     job = run_job()
     check_status(job.id)
     path = export(job.id)
-    download(path)
+    file_name = download(path)
+    return extract(file_name)
 
 
 def run_job():
@@ -31,7 +34,6 @@ def run_job():
     req = urllib.request.Request(job_url, data=data, headers=headers)
     res = urllib.request.urlopen(req)
     job_data = Job(res.read().decode('utf8'))
-    job_data.dump()
     return job_data
 
 
@@ -65,13 +67,28 @@ def export(job_id):
 
 def download(url):
     res = urllib.request.urlopen(url)
-    cache_dir = 'cache/'
     file_name = url.split('/')[-1]
     if not os.path.exists(cache_dir):
         os.makedirs(cache_dir)
     with open(cache_dir + file_name, 'b+w') as f:
         f.write(res.read())
     return file_name
+
+
+def extract(file_name):
+    tar = tarfile.open(cache_dir + file_name, "r:gz")
+    tar.extractall(path=cache_dir)
+    tar.close()
+    json_file = cache_dir+get_filename(file_name)+'/result.json'
+    if not os.path.exists(json_file):
+        return 'error'
+    else:
+        return json_file
+
+
+def get_filename(path):
+    filename = path.split('/')[-1].split('.')[0]
+    return filename
 
 
 class Job:
