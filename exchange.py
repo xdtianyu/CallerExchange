@@ -4,6 +4,7 @@ import operator
 import re
 
 import downloader
+import uploader
 from model.caller import Caller
 import sqlite3
 
@@ -102,3 +103,5 @@ cur.close()
 conn.close()
 
 # 5. upload offline database to QiNiu
+
+uploader.upload('cache/caller_' + str(status.version) + '.db')
