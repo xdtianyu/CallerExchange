@@ -9,6 +9,8 @@ import sqlite3
 
 from model.status import Status
 
+status = Status()
+
 # 1. download offline file from LeanCloud
 
 result_json = downloader.run()
@@ -71,8 +73,13 @@ for number in caller_map:
     caller_list.append(target.dict())
 
 # 4. write to database file
+status.new_count = len(caller_list) - status.count
 
-status = Status()
+if status.new_count == 0:
+    print("No new data.")
+    exit(0)
+
+status.count = len(caller_list)
 status.update()
 
 conn = sqlite3.connect('cache/caller_' + str(status.version) + '.db')
