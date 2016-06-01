@@ -68,6 +68,7 @@ for number in caller_map:
         t = max(counts.items(), key=operator.itemgetter(1))[0]
         for caller in c_list:
             if caller.type == t:
+                caller.count = counts[t]
                 target = caller
                 break
 
