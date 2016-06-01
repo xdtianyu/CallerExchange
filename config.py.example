@@ -2,3 +2,6 @@
 
 app_id = "APP_ID"
 app_key = "MASTER_APP_KEY,master"
+qn_access_key = "ACCESS_KEY"
+qn_secret_key = "SECRET_KEY"
+qn_bucket_name = "BUCKET_NAME"
