@@ -50,6 +50,8 @@ def check_status(job_id):
             print('RUNNING')
             time.sleep(3)
         elif job_status.status == 'OK':
+            # wait for server side prepare download file
+            time.sleep(30)
             break
 
 
