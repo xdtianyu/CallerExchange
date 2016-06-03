@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import os
 import tarfile
+import zipfile
+
 import qiniu
 
 import config
@@ -13,17 +15,17 @@ status_file = 'cache/status.json'
 
 
 def upload(name):
-    tar_file = compress(name)
-    upload_file(tar_file)
+    zip_file = compress(name)
+    upload_file(zip_file)
     upload_file(status_file)
 
 
 def compress(name):
-    tar_name = name + ".tar.gz"
-    tar = tarfile.open(tar_name, "w:gz")
-    tar.add(name, arcname=os.path.basename(name))
-    tar.close()
-    return tar_name
+    zip_file = name + ".zip"
+    zf = zipfile.ZipFile(zip_file, "w", zipfile.ZIP_DEFLATED)
+    zf.write(name, arcname=os.path.basename(name))
+    zf.close()
+    return zip_file
 
 
 def upload_file(file_name):
