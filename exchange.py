@@ -5,6 +5,7 @@ import re
 
 import downloader
 import uploader
+from model import caller_type
 from model.caller import Caller
 import sqlite3
 
@@ -58,6 +59,9 @@ for number in caller_map:
             count = caller.count
         if 0 <= caller.source <= 2:
             source = caller.source
+            # set caller type
+            name = caller.name
+            target.type = caller_type.from_name(name)
 
     # find max type count from user marked
     if count == 0 and source == 8 and len(c_list) > 2:

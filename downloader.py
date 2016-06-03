@@ -25,8 +25,13 @@ def run():
     job = run_job()
     check_status(job.id)
     path = export(job.id)
-    file_name = download(path)
-    return extract(file_name)
+    while True:
+        try:
+            file_name = download(path)
+            return extract(file_name)
+        except tarfile.ReadError:
+            print('error extract file, try again.')
+            continue
 
 
 def run_job():
@@ -50,8 +55,6 @@ def check_status(job_id):
             print('RUNNING')
             time.sleep(3)
         elif job_status.status == 'OK':
-            # wait for server side prepare download file
-            time.sleep(30)
             break
 
 
