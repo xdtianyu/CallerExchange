@@ -90,16 +90,16 @@ status.update()
 
 conn = sqlite3.connect('cache/caller_' + str(status.version) + '.db')
 cur = conn.cursor()
-cur.execute('''CREATE TABLE IF NOT EXISTS CALLER
-    ( ID INTEGER PRIMARY KEY AUTOINCREMENT, NUMBER TEXT UNIQUE, NAME TEXT, COUNT INTEGER, TYPE INTEGER, SOURCE INTEGER,
-    TIME INTEGER );''')
+cur.execute('''CREATE TABLE IF NOT EXISTS caller
+    ( id INTEGER PRIMARY KEY AUTOINCREMENT, number TEXT UNIQUE, name TEXT, count INTEGER, type INTEGER, source INTEGER,
+    time INTEGER );''')
 for caller in caller_list:
     print(caller)
     pass
 cur.executemany('insert into caller (number, name, count, type, source, time) values (?, ?, ?, ?, ?, ?)', caller_list)
 
-cur.execute('''CREATE TABLE IF NOT EXISTS STATUS
-    ( ID INTEGER PRIMARY KEY AUTOINCREMENT, VERSION INTEGER, COUNT INTEGER, NEW_COUNT INTEGER, TIME INTEGER );''')
+cur.execute('''CREATE TABLE IF NOT EXISTS status
+    ( id INTEGER PRIMARY KEY AUTOINCREMENT, version INTEGER, count INTEGER, new_count INTEGER, time INTEGER );''')
 
 cur.execute('insert into status (version, count, new_count, time) values (?, ?, ?, ?)', status.to_list())
 
