@@ -93,9 +93,9 @@ cur = conn.cursor()
 cur.execute('''CREATE TABLE IF NOT EXISTS caller
     ( id INTEGER PRIMARY KEY AUTOINCREMENT, number TEXT UNIQUE, name TEXT, count INTEGER, type INTEGER, source INTEGER,
     time INTEGER );''')
-for caller in caller_list:
-    print(caller)
-    pass
+# for caller in caller_list:
+#     print(caller)
+#     pass
 cur.executemany('insert into caller (number, name, count, type, source, time) values (?, ?, ?, ?, ?, ?)', caller_list)
 
 cur.execute('''CREATE TABLE IF NOT EXISTS status
