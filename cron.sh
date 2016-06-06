@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo ($date)
+
 PWD="$(dirname $0)"
 
 echo "$PWD"
