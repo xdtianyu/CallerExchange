@@ -19,5 +19,5 @@ python exchange.py
 **crontab**
 
 ```
-5 0 * * * cd /path/to/project && /path/to/venv/bin/python /path/to/exchange.py >> /var/log/exchange.log 2>&1
+5 0 * * * bash /path/to/CallerExchange/cron.sh >> /var/log/exchange.log 2>&1
 ```
