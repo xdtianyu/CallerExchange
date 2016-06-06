@@ -15,3 +15,9 @@ source venv/bin/activate
 pip install -r requirements.txt -I
 python exchange.py
 ```
+
+**crontab**
+
+```
+5 0 * * * cd /path/to/project && /path/to/venv/bin/python /path/to/exchange.py >> /var/log/exchange.log 2>&1
+```
