@@ -31,7 +31,7 @@ def run():
             return extract(file_name)
         except tarfile.ReadError:
             print('error extract file, try again.')
-            time.sleep(3)
+            time.sleep(10)
             continue
 
 
