@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo ($date)
+echo $(date)
 
 PWD="$(dirname $0)"
 
