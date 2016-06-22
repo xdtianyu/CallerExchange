@@ -2,7 +2,7 @@
 
 import json
 import os
-import tarfile
+import gzip
 import urllib.request
 
 import time
@@ -27,9 +27,9 @@ def run():
     path = export(job.id)
     while True:
         try:
-            file_name = download(path)
-            return extract(file_name)
-        except tarfile.ReadError:
+            dir_name, file_name = download(path)
+            return extract(dir_name, file_name)
+        except OSError:
             print('error extract file, try again.')
             time.sleep(10)
             continue
@@ -81,21 +81,28 @@ def download(url):
             res = urllib.request.urlopen(url)
             break
         except HTTPError:
+            print('download error, try again.')
+            time.sleep(3)
             continue
 
+    dir_name = url.split('/')[-2] + '/'
     file_name = url.split('/')[-1]
-    if not os.path.exists(cache_dir):
-        os.makedirs(cache_dir)
-    with open(cache_dir + file_name, 'b+w') as f:
+
+    if not os.path.exists(cache_dir + dir_name):
+        os.makedirs(cache_dir + dir_name)
+    with open(cache_dir + dir_name + file_name, 'b+w') as f:
         f.write(res.read())
-    return file_name
+    return dir_name, file_name
 
 
-def extract(file_name):
-    tar = tarfile.open(cache_dir + file_name, "r:gz")
-    tar.extractall(path=cache_dir)
-    tar.close()
-    json_file = cache_dir+get_filename(file_name)+'/result.json'
+def extract(dir_name, file_name):
+    gz = gzip.open(cache_dir + dir_name + file_name, "rb")
+    json_file = cache_dir + dir_name + get_filename(file_name)
+    jf = open(json_file, 'wb')
+    jf.write(gz.read())
+    gz.close()
+    gz.close()
+
     if not os.path.exists(json_file):
         return 'error'
     else:
