@@ -124,5 +124,5 @@ zip_file = compress('cache/caller_' + str(status.version) + '.db')
 status.update(zip_file)
 
 # upload files
-uploader.upload_file(zip_file)
-uploader.upload_file(data_file)
+uploader.upload(zip_file)
+uploader.upload(data_file)
