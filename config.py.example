@@ -5,5 +5,3 @@ app_key = "MASTER_APP_KEY,master"
 qn_access_key = "ACCESS_KEY"
 qn_secret_key = "SECRET_KEY"
 qn_bucket_name = "BUCKET_NAME"
-coding_url = "https://coding.net/api/user/tianyu/project/test/git/upload/master"
-coding_sid = 'CODING_SID'
