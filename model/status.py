@@ -11,7 +11,6 @@ data_file = "cache/status.json"
 
 
 class Status:
-
     version = 0
     count = 0
     new_count = 0
@@ -28,10 +27,10 @@ class Status:
         print(self.version, self.timestamp)
 
     def json(self):
-        return {"version": self.version, "count": self.count, "new_count": self.new_count, "timestamp": self.timestamp}
+        return {"version": self.version, "count": self.count, "new_count": self.new_count, "timestamp": self.timestamp,
+                'md5': self.md5}
 
     def update(self, file):
-        self.version += 1
         self.timestamp = int(time.mktime(datetime.now().utctimetuple()))
         self.md5 = md5sum(file)
         with open(data_file, "w") as f:
@@ -39,6 +38,9 @@ class Status:
 
     def to_list(self):
         return [self.version, self.count, self.new_count, self.timestamp]
+
+    def bump(self):
+        self.version += 1
 
 
 def md5sum(filename):

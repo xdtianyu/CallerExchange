@@ -97,6 +97,7 @@ if status.new_count == 0:
     exit(0)
 
 status.count = len(caller_list)
+status.bump()
 
 conn = sqlite3.connect('cache/caller_' + str(status.version) + '.db')
 cur = conn.cursor()
