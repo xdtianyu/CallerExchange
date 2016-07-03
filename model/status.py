@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
+import hashlib
 import json
 import os
 import time
 
 from datetime import datetime
+from functools import partial
 
 data_file = "cache/status.json"
 
@@ -14,6 +16,7 @@ class Status:
     count = 0
     new_count = 0
     timestamp = None
+    md5 = None
 
     def __init__(self):
         if not os.path.exists(data_file):
@@ -27,11 +30,20 @@ class Status:
     def json(self):
         return {"version": self.version, "count": self.count, "new_count": self.new_count, "timestamp": self.timestamp}
 
-    def update(self):
+    def update(self, file):
         self.version += 1
         self.timestamp = int(time.mktime(datetime.now().utctimetuple()))
+        self.md5 = md5sum(file)
         with open(data_file, "w") as f:
             f.write(json.dumps(self.json()))
 
     def to_list(self):
         return [self.version, self.count, self.new_count, self.timestamp]
+
+
+def md5sum(filename):
+    with open(filename, mode='rb') as f:
+        d = hashlib.md5()
+        for buf in iter(partial(f.read, 128), b''):
+            d.update(buf)
+    return d.hexdigest()

@@ -1,31 +1,18 @@
 #!/usr/bin/env python3
 import os
-import zipfile
 
 import qiniu
-import requests
 
 import config
+from exchange import status
 
 access_key = config.qn_access_key
 secret_key = config.qn_secret_key
 bucket_name = config.qn_bucket_name
 
-status_file = 'cache/status.json'
-
 
 def upload(name):
-    zip_file = compress(name)
-    upload_file(zip_file)
-    upload_file(status_file)
-
-
-def compress(name):
-    zip_file = name + ".zip"
-    zf = zipfile.ZipFile(zip_file, "w", zipfile.ZIP_DEFLATED)
-    zf.write(name, arcname=os.path.basename(name))
-    zf.close()
-    return zip_file
+    upload_file(name)
 
 
 def upload_file(file_name):

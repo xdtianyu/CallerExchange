@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import operator
+import os
 
 import re
+import zipfile
 
 import downloader
 import uploader
@@ -9,7 +11,16 @@ from model import caller_type
 from model.caller import Caller
 import sqlite3
 
-from model.status import Status
+from model.status import Status, data_file
+
+
+def compress(file_name):
+    zip_file = file_name + ".zip"
+    zf = zipfile.ZipFile(zip_file, "w", zipfile.ZIP_DEFLATED)
+    zf.write(file_name, arcname=os.path.basename(file_name))
+    zf.close()
+    return zip_file
+
 
 status = Status()
 
@@ -86,7 +97,6 @@ if status.new_count == 0:
     exit(0)
 
 status.count = len(caller_list)
-status.update()
 
 conn = sqlite3.connect('cache/caller_' + str(status.version) + '.db')
 cur = conn.cursor()
@@ -109,4 +119,9 @@ conn.close()
 
 # 5. upload offline database to QiNiu
 
-uploader.upload('cache/caller_' + str(status.version) + '.db')
+zip_file = compress('cache/caller_' + str(status.version) + '.db')
+status.update(zip_file)
+
+# upload files
+uploader.upload_file(zip_file)
+uploader.upload_file(data_file)
