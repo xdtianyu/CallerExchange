@@ -51,7 +51,23 @@ with open(result_json) as f:
         # add to caller map
         if caller.number not in caller_map.keys():
             caller_map[caller.number] = []
-        caller_map[caller.number].append(caller)
+
+        # filter repeated number
+        append = True
+        for i in range(0, len(caller_map[caller.number])):
+            c = caller_map[caller.number][i]
+
+            if c.name == caller.name and c.type == caller.type and c.source == caller.source:
+
+                if caller.count == 0:
+                    caller_map[caller.number][i].count += 1
+                elif caller.count > caller_map[caller.number][i].count:
+                    caller_map[caller.number][i].count = caller.count
+                caller_map[caller.number][i].repeat += 1
+                append = False
+                break
+        if append:
+            caller_map[caller.number].append(caller)
 
 # 3. resort caller list from map
 
@@ -60,14 +76,16 @@ caller_list = []
 for number in caller_map:
     c_list = caller_map[number]
     count = 0
+    repeat = 0
     target = c_list[0]
     source = 8
 
     # find max count from baidu, 360 or sogou
     for caller in c_list:
-        if caller.count > count:
+        if caller.repeat > repeat:
             target = caller
             count = caller.count
+            repeat = caller.repeat
         if 0 <= caller.source <= 2:
             source = caller.source
             # set caller type

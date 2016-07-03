@@ -9,11 +9,12 @@ class Caller:
     """model of caller class for LeanCloud data"""
     number = None
     name = None
-    count = None
+    count = 0
     type = None
     source = None
     uid = None
     time = None
+    repeat = 0
 
     def __init__(self, s):
         self.__dict__ = json.loads(s)
