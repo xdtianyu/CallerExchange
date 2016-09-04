@@ -11,7 +11,14 @@ from urllib.error import HTTPError
 import config
 
 job_url = 'https://leancloud.cn/1.1/bigquery/job'
-job_params = {"appId": config.app_id, "jobConfig": {"sql": "select * from caller"}}
+
+job_list = [
+    {"appId": config.app_id, "jobConfig": {"sql": 'select * from caller WHERE createdAt <= '
+                                                  '"2016-08-01 00:00:00.000" ORDER BY createdAt'}},
+    {"appId": config.app_id, "jobConfig": {"sql": 'select * from caller WHERE createdAt >= '
+                                                  '"2016-08-01 00:00:00.000" ORDER BY createdAt'}}
+]
+
 cache_dir = 'cache/'
 
 headers = {
@@ -22,7 +29,30 @@ headers = {
 
 
 def run():
-    job = run_job()
+    caches = []
+    for job_params in job_list:
+        cache_file = run_once(job_params)
+        print(cache_file)
+        if cache_file == 'error':
+            return 'error'
+        caches.append(cache_file)
+
+    # combine cache files to single one.
+    import hashlib
+    sha1 = hashlib.sha1()
+    sha1.update(str(time.time()).encode('utf-8'))
+    res = cache_dir + sha1.hexdigest()
+
+    with open(res, 'w') as cache:
+        for f in caches:
+            with open(f) as f_cache:
+                for line in f_cache:
+                    cache.write(line)
+    return res
+
+
+def run_once(job_params):
+    job = run_job(job_params)
     check_status(job.id)
     path = export(job.id)
     while True:
@@ -35,7 +65,7 @@ def run():
             continue
 
 
-def run_job():
+def run_job(job_params):
     data = json.dumps(job_params).encode('utf8')
 
     req = urllib.request.Request(job_url, data=data, headers=headers)
