@@ -19,7 +19,7 @@ class Caller:
     def __init__(self, s):
         self.__dict__ = json.loads(s)
         self.source = self.__dict__['from']
-        self.time = int(mktime(datetime.strptime(self.__dict__['createdAt'], "%Y-%m-%d %H:%M:%S.%f").timetuple()))
+        self.time = int(mktime(datetime.strptime(self.__dict__['createdAt'], "%Y-%m-%dT%H:%M:%S.%fZ").timetuple()))
         if '+86' in self.number:
             self.number = self.number.replace('+86', '')
         if ' ' in self.number:
