@@ -16,7 +16,11 @@ job_list = [
     {"appId": config.app_id, "jobConfig": {"sql": 'select * from caller WHERE createdAt <= '
                                                   '"2016-08-01 00:00:00.000" ORDER BY createdAt'}},
     {"appId": config.app_id, "jobConfig": {"sql": 'select * from caller WHERE createdAt >= '
-                                                  '"2016-08-01 00:00:00.000" ORDER BY createdAt'}}
+                                                  '"2016-08-01 00:00:00.000" AND createdAt <='
+                                                  '"2017-01-01 00:00:00.000" ORDER BY createdAt'}},
+    {"appId": config.app_id, "jobConfig": {"sql": 'select * from caller WHERE createdAt >= '
+                                                  '"2017-01-01 00:00:00.000" AND createdAt <='
+                                                  '"2017-04-01 00:00:00.000" ORDER BY createdAt'}}
 ]
 
 cache_dir = 'cache/'
