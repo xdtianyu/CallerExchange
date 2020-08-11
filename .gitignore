@@ -60,3 +60,4 @@ __pycache__
 config.py
 cache/
 venv/
+data/

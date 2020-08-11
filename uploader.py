@@ -16,8 +16,9 @@ cos_key = config.cos_key
 
 
 def upload(name):
-    upload_file(name)
-    upload_cos(name)
+    # upload_file(name)
+    # upload_cos(name)
+    pass
 
 
 # upload to qiniu

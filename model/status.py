@@ -7,7 +7,7 @@ import time
 from datetime import datetime
 from functools import partial
 
-data_file = "cache/status.json"
+data_file = "cache/status_2.json"
 
 
 class Status:
@@ -16,6 +16,7 @@ class Status:
     new_count = 0
     timestamp = None
     md5 = None
+    url = 'https://sh.xdty.org:10443/d/db/'
 
     def __init__(self):
         if not os.path.exists(data_file):
@@ -28,7 +29,7 @@ class Status:
 
     def json(self):
         return {"version": self.version, "count": self.count, "new_count": self.new_count, "timestamp": self.timestamp,
-                'md5': self.md5}
+                'md5': self.md5, "url": self.url}
 
     def update(self, file):
         self.timestamp = int(time.mktime(datetime.now().utctimetuple()))

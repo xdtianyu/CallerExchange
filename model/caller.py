@@ -17,7 +17,7 @@ class Caller:
     repeat = 0
 
     def __init__(self, s):
-        self.__dict__ = json.loads(s)
+        self.__dict__ = s
         self.source = self.__dict__['from']
         self.time = int(mktime(datetime.strptime(self.__dict__['createdAt'], "%Y-%m-%dT%H:%M:%S.%fZ").timetuple()))
         if '+86' in self.number:

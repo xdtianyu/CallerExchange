@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import json
 import operator
 import os
 
@@ -26,7 +27,9 @@ status = Status()
 
 # 1. download offline file from LeanCloud
 
-result_json = downloader.run()
+# result_json = downloader.run()
+
+result_json = 'cache/caller.json'
 
 if result_json == 'error':
     print("Download error!")
@@ -36,9 +39,22 @@ if result_json == 'error':
 
 caller_map = {}  # number:[caller]
 
+# read appeal
+appeal = []
+with open("cache/appeal.json") as f:
+    data = json.load(f)["results"]
+    for item in data:
+        appeal.append(item["number"])
+
 with open(result_json) as f:
-    for line in f:
-        caller = Caller(line)
+    data = json.load(f)
+    for item in data["results"]:
+        caller = Caller(item)
+
+        # filter appeal
+        if caller.number in appeal:
+            print("number in appeal: " + caller.number)
+            continue
 
         # filter wrong number
         if not re.match("^[\d\+]*$", caller.number):
@@ -142,5 +158,5 @@ zip_file = compress('cache/caller_' + str(status.version) + '.db')
 status.update(zip_file)
 
 # upload files
-uploader.upload(zip_file)
+# uploader.upload(zip_file)
 uploader.upload(data_file)
